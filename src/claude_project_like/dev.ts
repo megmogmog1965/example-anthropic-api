@@ -41,9 +41,22 @@ export async function createSourceCode(
     ],
   })
 
-  res.on('text', (text: string) => {
-    callback(text)
-  })
+  for await (const event of res) {
+    // ignores except `content_block_delta`.
+    if (event.type !== 'content_block_delta') {
+      continue
+    }
+
+    if (event.delta.type === 'text_delta') {
+      callback(event.delta.text)
+
+    } else if (event.delta.type === 'input_json_delta') {
+      callback(event.delta.partial_json)
+
+    } else {
+      throw new Error(`Not implemented yet: ${event.delta.type}`)
+    }
+  }
 }
 
 /**
