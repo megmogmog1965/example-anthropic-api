@@ -53,8 +53,8 @@ export async function createSourceCode(
     } else if (event.delta.type === 'input_json_delta') {
       callback(event.delta.partial_json)
 
-    } else {
-      throw new Error(`Not implemented yet: ${event.delta.type}`)
+    } else {  // Type check 上はありえないが.
+      throw new Error(`Not implemented yet: ${JSON.stringify(event)}`)
     }
   }
 }
